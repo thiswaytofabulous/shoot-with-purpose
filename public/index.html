@@ -12,11 +12,11 @@
   :root{
     --navy:#2E4968; --navy-soft:#5b6878; --page:#2E4968; --card:#FFFFFF;
     --accent:#9C5F66; --accent-strong:#2E4968; --on-accent:#FFFFFF;
-    --bubble:#EFE3E3; --pop:#DBB3B3; --line:rgba(46,73,104,0.14);
+    --bubble:#EFE3E3; --pop:#DBB3B3; --hl:#C89FA3; --line:rgba(46,73,104,0.14);
     --font:'Montserrat',"Helvetica Neue",Arial,sans-serif;
   }
   [data-brand="twtf"]{
-    --page:#F8E6E5; --accent:#D1007A; --accent-strong:#FF0091; --bubble:#F8E6E5; --pop:#EFFF72;
+    --page:#F8E6E5; --accent:#D1007A; --accent-strong:#FF0091; --bubble:#F8E6E5; --pop:#EFFF72; --hl:#FF0091;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
@@ -37,7 +37,7 @@
   header{padding:22px 24px 18px;border-bottom:1px solid var(--line);background:var(--card);flex-shrink:0;text-align:center}
   header h1{font-size:clamp(20px,4.6vw,26px);font-weight:900;text-transform:uppercase;letter-spacing:.5px;line-height:1.2;text-wrap:balance}
   header h1 .line{display:block}
-  header h1 .hl{color:#C89FA3}
+  header h1 .hl{color:var(--hl)}
   header h1 em{font-style:italic}
   .phases{display:flex;gap:6px;margin-top:16px}
   .phase{flex:1;height:6px;border-radius:99px;background:rgba(46,73,104,.12);transition:background .3s}
