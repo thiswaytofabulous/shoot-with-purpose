@@ -10,7 +10,7 @@
 <style>
   /* HBM is the default look; [data-brand="twtf"] swaps the accent system. */
   :root{
-    --navy:#2E4968; --navy-soft:#5b6878; --page:#F3F1F0; --card:#FFFFFF;
+    --navy:#2E4968; --navy-soft:#5b6878; --page:#2E4968; --card:#FFFFFF;
     --accent:#9C5F66; --accent-strong:#2E4968; --on-accent:#FFFFFF;
     --bubble:#EFE3E3; --pop:#DBB3B3; --line:rgba(46,73,104,0.14);
     --font:'Montserrat',"Helvetica Neue",Arial,sans-serif;
@@ -21,7 +21,7 @@
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   body{font-family:var(--font);background:var(--page);color:var(--navy);-webkit-font-smoothing:antialiased;
-    display:flex;justify-content:center;
+    display:flex;justify-content:center;align-items:flex-start;
     padding:max(16px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
   .shell{width:100%;max-width:680px;display:flex;flex-direction:column;background:var(--card);border-radius:20px;overflow:hidden;
     height:calc(100dvh - 32px);max-height:900px;box-shadow:0 1px 0 var(--line)}
@@ -30,7 +30,7 @@
   /* Header graphic (1280x420, same as the Wizard + Brand Therapy banners).
      Until the brand's graphic exists, a navy band with the logo stands in. */
   .banner-wrap{flex-shrink:0;background:var(--navy)}
-  .banner-wrap.has-image{background:var(--card)}
+  .banner-wrap.has-image{background:var(--page)}
   .banner{width:100%;display:block;aspect-ratio:1280/420;object-fit:cover}
   .banner-fallback{display:flex;align-items:center;justify-content:center;padding:28px 24px}
   .banner-fallback img{height:56px;width:auto}
