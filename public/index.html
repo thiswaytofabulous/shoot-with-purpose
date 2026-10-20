@@ -30,11 +30,13 @@
   /* Header graphic (1280x420, same as the Wizard + Brand Therapy banners).
      Until the brand's graphic exists, a navy band with the logo stands in. */
   .banner-wrap{flex-shrink:0;background:var(--navy)}
+  .banner-wrap.has-image{background:var(--card)}
   .banner{width:100%;display:block;aspect-ratio:1280/420;object-fit:cover}
   .banner-fallback{display:flex;align-items:center;justify-content:center;padding:28px 24px}
   .banner-fallback img{height:56px;width:auto}
-  header{padding:20px 24px 16px;border-bottom:1px solid var(--line);background:var(--card);flex-shrink:0}
-  header h1{font-size:19px;font-weight:800;letter-spacing:-.2px;line-height:1.3;text-wrap:balance}
+  header{padding:22px 24px 18px;border-bottom:1px solid var(--line);background:var(--card);flex-shrink:0;text-align:center}
+  header h1{font-size:clamp(20px,4.6vw,26px);font-weight:900;text-transform:uppercase;letter-spacing:.5px;line-height:1.2;text-wrap:balance}
+  header h1 .line{display:block}
   .phases{display:flex;gap:6px;margin-top:16px}
   .phase{flex:1;height:6px;border-radius:99px;background:rgba(46,73,104,.12);transition:background .3s}
   .phase.is-active{background:var(--accent-strong)}
@@ -42,12 +44,13 @@
   .phases[hidden]{display:none}
 
   /* START */
-  .start{padding:28px 24px 32px;display:flex;flex-direction:column;gap:18px;overflow-y:auto}
-  .start p{font-size:15px;line-height:1.65;font-weight:500;max-width:56ch}
+  .start{padding:28px 24px 32px;display:flex;flex-direction:column;align-items:center;gap:18px;overflow-y:auto;text-align:center}
+  .start > *{width:100%;max-width:520px}
+  .start p{font-size:15px;line-height:1.65;font-weight:500;margin:0 auto}
   .field{display:flex;flex-direction:column;gap:6px}
   .field label{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
   .field .hint{font-size:12.5px;color:var(--navy-soft);font-weight:500;line-height:1.5}
-  .field input{font:inherit;font-size:16px;font-weight:500;color:var(--navy);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;outline:none;background:#fff}
+  .field input{text-align:center;font:inherit;font-size:16px;font-weight:500;color:var(--navy);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;outline:none;background:#fff}
   .field input:focus{border-color:var(--accent-strong)}
   .start .hint-line{font-size:13px;color:var(--navy-soft);font-weight:500;margin-top:-6px}
   .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
@@ -56,8 +59,8 @@
   .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
   .btn.ghost{background:transparent;color:var(--navy)}
   .btn:focus-visible,.linkish:focus-visible,.send:focus-visible,.attach-btn:focus-visible{outline:3px solid var(--pop);outline-offset:2px}
-  .linkish{background:none;border:0;font:inherit;font-size:13px;font-weight:700;color:var(--accent);text-decoration:underline;text-underline-offset:3px;cursor:pointer;align-self:flex-start}
-  .note{font-size:13.5px;font-weight:600;line-height:1.55;border-radius:12px;padding:12px 14px;background:var(--bubble)}
+  .linkish{background:none;border:0;font:inherit;font-size:13px;font-weight:700;color:var(--accent);text-decoration:underline;text-underline-offset:3px;cursor:pointer;align-self:center}
+  .note{text-align:center;font-size:13.5px;font-weight:600;line-height:1.55;border-radius:12px;padding:12px 14px;background:var(--bubble)}
   .note:empty{display:none}
 
   /* CHAT */
@@ -82,7 +85,7 @@
   @media (prefers-reduced-motion:reduce){.dot{animation:none;opacity:.6}.btn:hover{transform:none}}
 
   .composer-wrap{border-top:1px solid var(--line);background:#fff}
-  .saved{font-size:11.5px;font-weight:600;color:var(--navy-soft);padding:10px 18px 0;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .saved{font-size:11.5px;font-weight:600;color:var(--navy-soft);padding:10px 18px 0;display:flex;justify-content:center;gap:6px 14px;flex-wrap:wrap;text-align:center}
   .pending{display:flex;flex-wrap:wrap;gap:8px;padding:10px 16px 0}
   .pending:empty{display:none}
   .pchip{display:flex;align-items:center;gap:6px;background:var(--bubble);font-size:12px;font-weight:700;padding:6px 8px 6px 12px;border-radius:99px}
@@ -113,7 +116,7 @@
     <div class="banner-fallback" id="bannerFallback"><img id="logo" src="assets/hbm-logo-white.png" alt="Haven Built Media" /></div>
   </div>
   <header>
-    <h1 id="headline">Let&rsquo;s not shoot just to shoot. Let&rsquo;s create with purpose.</h1>
+    <h1 id="headline"><span class="line">Let&rsquo;s not shoot just to shoot.</span> <span class="line">Let&rsquo;s create with purpose.</span></h1>
     <div class="phases" id="phases" hidden aria-label="Conversation progress">
       <div class="phase" data-p="change"></div><div class="phase" data-p="goal"></div><div class="phase" data-p="gaps"></div><div class="phase" data-p="people"></div>
     </div>
@@ -186,8 +189,8 @@
     // (1280x420) into the repo and it replaces the logo band automatically.
     var banner = $("banner");
     banner.alt = name;
-    banner.onload = function(){ banner.hidden = false; $("bannerFallback").hidden = true; };
-    banner.onerror = function(){ banner.hidden = true; $("bannerFallback").hidden = false; };
+    banner.onload = function(){ banner.hidden = false; $("bannerFallback").hidden = true; banner.parentNode.classList.add("has-image"); };
+    banner.onerror = function(){ banner.hidden = true; $("bannerFallback").hidden = false; banner.parentNode.classList.remove("has-image"); };
     banner.src = "assets/" + brand + "-header.png";
     if (brand === "twtf"){
       $("doneTitle").textContent = "Okay. I’ve got SO much to work with.";
