@@ -6,7 +6,7 @@
 <title>Pre-Shoot Conversation · Jessi Cabanin</title>
 <meta name="robots" content="noindex" />
 <link rel="icon" href="assets/hbm-logo-white.png" />
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600;1,900&display=swap" rel="stylesheet" />
 <style>
   /* HBM is the default look; [data-brand="twtf"] swaps the accent system. */
   :root{
@@ -37,6 +37,8 @@
   header{padding:22px 24px 18px;border-bottom:1px solid var(--line);background:var(--card);flex-shrink:0;text-align:center}
   header h1{font-size:clamp(20px,4.6vw,26px);font-weight:900;text-transform:uppercase;letter-spacing:.5px;line-height:1.2;text-wrap:balance}
   header h1 .line{display:block}
+  header h1 .hl{color:#C89FA3}
+  header h1 em{font-style:italic}
   .phases{display:flex;gap:6px;margin-top:16px}
   .phase{flex:1;height:6px;border-radius:99px;background:rgba(46,73,104,.12);transition:background .3s}
   .phase.is-active{background:var(--accent-strong)}
@@ -116,7 +118,7 @@
     <div class="banner-fallback" id="bannerFallback"><img id="logo" src="assets/hbm-logo-white.png" alt="Haven Built Media" /></div>
   </div>
   <header>
-    <h1 id="headline"><span class="line">Let&rsquo;s not shoot just to shoot.</span> <span class="line">Let&rsquo;s create with purpose.</span></h1>
+    <h1 id="headline"><span class="line">Let&rsquo;s not shoot just to shoot.</span> <span class="line hl">Let&rsquo;s create <em>with purpose.</em></span></h1>
     <div class="phases" id="phases" hidden aria-label="Conversation progress">
       <div class="phase" data-p="change"></div><div class="phase" data-p="goal"></div><div class="phase" data-p="gaps"></div><div class="phase" data-p="people"></div>
     </div>
@@ -124,12 +126,12 @@
 
   <!-- START -->
   <section class="start" id="start" hidden>
-    <p id="startIntro">To prep for your shoot, let&rsquo;s chat quickly about what&rsquo;s changing in your business, what&rsquo;s coming up, and where these photos and videos will actually be used, so every frame we take has a job. Feel free to brain dump. The messier the better! Upload any screenshots or Pinterest links if you have them (totally fine if you don&rsquo;t!). Everything saves as you go, so it&rsquo;s all good if you get sidetracked by another shiny object.</p>
+    <p id="startIntro">Let&rsquo;s chat about what&rsquo;s changing in your business, what&rsquo;s coming up, and where these photos and videos will actually live, so every frame we take has a job. Brain dump away, the messier the better! Screenshots and Pinterest links are welcome (but not required).</p>
     <div class="two">
       <div class="field"><label for="name">Your name</label><input type="text" id="name" autocomplete="name" /></div>
       <div class="field"><label for="email">Your email</label><input type="email" id="email" autocomplete="email" inputmode="email" placeholder="you@yourbusiness.com" /></div>
     </div>
-    <p class="hint-line">Coming back? Use the same name and email and you&rsquo;ll pick up right where you left off.</p>
+    <p class="hint-line">Sidetracked by a shiny object? Everything saves as you go. Just use the same name and email to pick right back up.</p>
     <button class="btn" id="startBtn" type="button">Let&rsquo;s chat</button>
     <div class="note" id="startNote" role="status"></div>
   </section>
