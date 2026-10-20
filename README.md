@@ -8,9 +8,9 @@ Not for brand story videos. That's Legacy Lucy / Story to Legacy.
 
 ## What happens
 
-1. **Client opens the link** and enters email, name and business. HBM is the default look and voice. Add `?brand=twtf` for TWTF.
-2. **They get a private "pick up where you left off" link** by email right away. Everything saves after every message, so they can leave and come back on any device. On the same device it reopens on its own.
-3. **If they enter their email again on a new device**, the conversation is *not* opened there. The private link is emailed to them instead, so nobody can read someone else's conversation by typing their email.
+1. **Client opens the link** and enters their name and email. HBM is the default look and voice. Add `?brand=twtf` for TWTF. Their business name comes up in the chat, not the form.
+2. **Everything saves after every message.** On the same device it just reopens. On a new device they enter the same name and email and land right where they left off.
+3. **Same email, different name** is blocked with a friendly note to text you. **A client whose last conversation is finished** (like a repeat client's next shoot) starts a fresh one; the old one stays in the archive.
 4. **They chat.** One question at a time, with follow-ups that dig a level deeper, reflections back, and room to brain dump. They can attach screenshots, PDFs or text files. The 4-segment bar at the top tracks progress (change → goal → gaps → people).
 5. **When it wraps**, you get an email with a **strategy brief** (the job of the shoot, the gaps, where it will live, a content map starter, quotes in their words, and things to watch for) plus the full conversation. Reply-to is set to the client.
 6. **"Send me a PDF"** on the finish screen emails the client a branded PDF of the conversation. It never includes your brief.
@@ -23,7 +23,7 @@ Not for brand story videos. That's Legacy Lucy / Story to Legacy.
 | HBM client | `https://YOUR-SITE.netlify.app/` |
 | TWTF client | `https://YOUR-SITE.netlify.app/?brand=twtf` |
 | Named shoot (shows up in the chat and the PDF) | add `&shoot=HERO%20Session%20on%20Nov%209` |
-| Prefill their details | add `&name=Becky%20Reel&email=becky@...&business=...` |
+| Prefill their details | add `&name=Becky%20Reel&email=becky@...` (add `&business=...` to skip asking for it) |
 
 Example: `https://YOUR-SITE.netlify.app/?shoot=HERO%20Session%20on%20Nov%209&name=Becky%20Reel&business=Reel%20Home%20Care%20Consulting`
 
@@ -32,12 +32,16 @@ Example: `https://YOUR-SITE.netlify.app/?shoot=HERO%20Session%20on%20Nov%209&nam
 1. Netlify → **Add new site → Import an existing project** → pick this repo. Build settings come from `netlify.toml` (static `public/` folder + functions, no build command).
 2. **Site configuration → Environment variables**:
    - `ANTHROPIC_API_KEY` (required)
-   - `RESEND_API_KEY` (required: resume links, client PDF, your brief)
+   - `RESEND_API_KEY` (required: client PDF and your brief)
    - `FROM_EMAIL_ADDRESS` (an address on your verified Resend domain, e.g. `noreply@havenbuiltmedia.com`; the sender name switches between "Jessi at Haven Built Media" and "Jessi at This Way to Fabulous" automatically)
    - `BRIEF_TO_EMAIL` (where your briefs go)
    - `ADMIN_TOKEN` (any long random string, for `/admin.html`)
    - Optional: `REPLY_TO_EMAIL`, `MODEL`
 3. Deploy. Netlify Blobs (where conversations are stored) needs no setup.
+
+## Header graphic
+
+Same size as the Wizard and Brand Therapy banners: **1280 x 420 px**. Save them as `public/assets/hbm-header.png` and `public/assets/twtf-header.png`, push, and they replace the navy logo band automatically. Keep the important stuff out of the far edges; it scales down on phones.
 
 ## Editing later
 

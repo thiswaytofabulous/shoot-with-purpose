@@ -27,16 +27,18 @@
     height:calc(100dvh - 32px);max-height:900px;box-shadow:0 1px 0 var(--line)}
   .shell.flow{height:auto;max-height:none}
 
-  header{background:var(--navy);color:#fff;padding:20px 24px 18px;flex-shrink:0}
-  .head-top{display:flex;justify-content:space-between;align-items:center;gap:16px}
-  .eyebrow{font-size:10.5px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;opacity:.85}
-  .logo{height:38px;width:auto;display:block}
-  header h1{font-size:clamp(18px,3.6vw,22px);font-weight:900;text-transform:uppercase;letter-spacing:.01em;line-height:1.15;margin-top:14px}
-  header h1 .hl{color:var(--pop)}
+  /* Header graphic (1280x420, same as the Wizard + Brand Therapy banners).
+     Until the brand's graphic exists, a navy band with the logo stands in. */
+  .banner-wrap{flex-shrink:0;background:var(--navy)}
+  .banner{width:100%;display:block;aspect-ratio:1280/420;object-fit:cover}
+  .banner-fallback{display:flex;align-items:center;justify-content:center;padding:28px 24px}
+  .banner-fallback img{height:56px;width:auto}
+  header{padding:20px 24px 16px;border-bottom:1px solid var(--line);background:var(--card);flex-shrink:0}
+  header h1{font-size:19px;font-weight:800;letter-spacing:-.2px;line-height:1.3;text-wrap:balance}
   .phases{display:flex;gap:6px;margin-top:16px}
-  .phase{flex:1;height:5px;border-radius:99px;background:rgba(255,255,255,.18);transition:background .3s}
-  .phase.is-active{background:var(--pop)}
-  .phase.is-done{background:#fff}
+  .phase{flex:1;height:6px;border-radius:99px;background:rgba(46,73,104,.12);transition:background .3s}
+  .phase.is-active{background:var(--accent-strong)}
+  .phase.is-done{background:var(--pop)}
   .phases[hidden]{display:none}
 
   /* START */
@@ -47,6 +49,7 @@
   .field .hint{font-size:12.5px;color:var(--navy-soft);font-weight:500;line-height:1.5}
   .field input{font:inherit;font-size:16px;font-weight:500;color:var(--navy);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;outline:none;background:#fff}
   .field input:focus{border-color:var(--accent-strong)}
+  .start .hint-line{font-size:13px;color:var(--navy-soft);font-weight:500;margin-top:-6px}
   .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
   .btn{font:inherit;font-weight:800;font-size:13px;letter-spacing:.1em;text-transform:uppercase;border-radius:999px;padding:15px 24px;cursor:pointer;border:2px solid var(--accent-strong);background:var(--accent-strong);color:var(--on-accent);transition:transform .15s,opacity .2s}
   .btn:hover{transform:translateY(-1px)}
@@ -105,12 +108,12 @@
 </head>
 <body>
 <div class="shell" id="shell">
+  <div class="banner-wrap">
+    <img class="banner" id="banner" alt="Haven Built Media" hidden />
+    <div class="banner-fallback" id="bannerFallback"><img id="logo" src="assets/hbm-logo-white.png" alt="Haven Built Media" /></div>
+  </div>
   <header>
-    <div class="head-top">
-      <div class="eyebrow" id="eyebrow">Pre-shoot conversation</div>
-      <img class="logo" id="logo" src="assets/hbm-logo-white.png" alt="Haven Built Media" />
-    </div>
-    <h1 id="headline">Before we pick up a camera, <span class="hl">let's talk about why.</span></h1>
+    <h1 id="headline">Let&rsquo;s not shoot just to shoot. Let&rsquo;s create with purpose.</h1>
     <div class="phases" id="phases" hidden aria-label="Conversation progress">
       <div class="phase" data-p="change"></div><div class="phase" data-p="goal"></div><div class="phase" data-p="gaps"></div><div class="phase" data-p="people"></div>
     </div>
@@ -118,18 +121,13 @@
 
   <!-- START -->
   <section class="start" id="start" hidden>
-    <p id="startIntro">This isn't a form. It's a conversation with me about what's changing in your business, what's coming up, and where these photos and videos will actually be used, so every frame we take has a job. Type as much or as little as you like. Everything saves as you go.</p>
-    <div class="field">
-      <label for="email">Your email</label>
-      <span class="hint">I'll send you a private link so you can step away and pick up right where you left off, on any device.</span>
-      <input type="email" id="email" autocomplete="email" inputmode="email" placeholder="you@yourbusiness.com" />
-    </div>
+    <p id="startIntro">To prep for your shoot, let&rsquo;s chat quickly about what&rsquo;s changing in your business, what&rsquo;s coming up, and where these photos and videos will actually be used, so every frame we take has a job. Feel free to brain dump. The messier the better! Upload any screenshots or Pinterest links if you have them (totally fine if you don&rsquo;t!). Everything saves as you go, so it&rsquo;s all good if you get sidetracked by another shiny object.</p>
     <div class="two">
       <div class="field"><label for="name">Your name</label><input type="text" id="name" autocomplete="name" /></div>
-      <div class="field"><label for="business">Your business</label><input type="text" id="business" autocomplete="organization" /></div>
+      <div class="field"><label for="email">Your email</label><input type="email" id="email" autocomplete="email" inputmode="email" placeholder="you@yourbusiness.com" /></div>
     </div>
-    <button class="btn" id="startBtn" type="button">Start our conversation</button>
-    <button class="linkish" id="resendBtn" type="button">Already started? Email me my link</button>
+    <p class="hint-line">Coming back? Use the same name and email and you&rsquo;ll pick up right where you left off.</p>
+    <button class="btn" id="startBtn" type="button">Let&rsquo;s chat</button>
     <div class="note" id="startNote" role="status"></div>
   </section>
 
@@ -179,13 +177,19 @@
   function applyBrand(b){
     brand = b === "twtf" ? "twtf" : "hbm";
     document.documentElement.setAttribute("data-brand", brand);
+    var name = brand === "twtf" ? "This Way to Fabulous" : "Haven Built Media";
     var logo = $("logo");
     logo.src = "assets/" + brand + "-logo-white.png";
-    logo.alt = brand === "twtf" ? "This Way to Fabulous" : "Haven Built Media";
+    logo.alt = name;
     document.querySelector('link[rel="icon"]').href = logo.src;
+    // Header graphic: drop assets/hbm-header.png or assets/twtf-header.png
+    // (1280x420) into the repo and it replaces the logo band automatically.
+    var banner = $("banner");
+    banner.alt = name;
+    banner.onload = function(){ banner.hidden = false; $("bannerFallback").hidden = true; };
+    banner.onerror = function(){ banner.hidden = true; $("bannerFallback").hidden = false; };
+    banner.src = "assets/" + brand + "-header.png";
     if (brand === "twtf"){
-      $("headline").innerHTML = 'Let’s make this shoot <span class="hl">mean something.</span>';
-      $("startIntro").textContent = "This isn’t a form. It’s you and me, talking it out: what’s changing in your biz, what’s coming up, and where these photos and videos will actually live, so every frame has a job. Brain dump away. Everything saves as you go.";
       $("doneTitle").textContent = "Okay. I’ve got SO much to work with.";
       $("doneCopy").textContent = "I’m going to sit with everything you shared and come back with a plan for our shoot: what we’ll capture, and where every piece will live.";
       input.placeholder = "Ramble away, I’m listening…";
@@ -243,7 +247,7 @@
     applyBrand(s.brand);
     chat.textContent = "";
     s.messages.forEach(function(m){ bubble(m.who, m.text); });
-    $("savedEmail").textContent = s.email ? " · your link is in " + s.email : "";
+    $("savedEmail").textContent = "";
     $("notMeBtn").textContent = "Not " + (s.name ? s.name.split(/\s+/)[0] : "you") + "? Start fresh";
     setPhase(s.complete ? "wrap" : (s.phase || "change"));
     if (s.complete){ show("done"); } else { show("chat"); input.focus(); }
@@ -258,35 +262,24 @@
 
   // ---------- start / resume ----------
   function prefill(){
-    ["email","name","business"].forEach(function(k){ if (qs.get(k)) $(k).value = qs.get(k); });
+    ["email","name"].forEach(function(k){ if (qs.get(k)) $(k).value = qs.get(k); });
   }
 
-  $("startBtn").addEventListener("click", async function(){
-    var note = $("startNote"), btn = this;
-    var email = $("email").value.trim(), name = $("name").value.trim(), business = $("business").value.trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ note.textContent = "Mind double-checking your email? That’s how you’ll get back to this."; $("email").focus(); return; }
+  async function begin(){
+    var note = $("startNote"), btn = $("startBtn");
+    var email = $("email").value.trim(), name = $("name").value.trim();
     if (!name){ note.textContent = "What should I call you?"; $("name").focus(); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ note.textContent = "Mind double-checking your email? That’s how you’ll get back to this."; $("email").focus(); return; }
     btn.disabled = true; note.textContent = "";
     try{
       var data = await api("session", { method:"POST", headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({ action:"start", email:email, name:name, business:business, brand:brand, shoot: qs.get("shoot") || "" }) });
-      if (data.status === "resume_sent"){
-        note.textContent = "Looks like we already started talking! I just emailed " + email + " a private link to pick up right where you left off.";
-      } else {
-        renderSession(data.session);
-      }
+        body: JSON.stringify({ action:"start", email:email, name:name, brand:brand, shoot: qs.get("shoot") || "", business: qs.get("business") || "" }) });
+      renderSession(data.session);
     }catch(e){ note.textContent = e.message; }
     btn.disabled = false;
-  });
-
-  $("resendBtn").addEventListener("click", async function(){
-    var note = $("startNote"), email = $("email").value.trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ note.textContent = "Pop your email in above and tap this again, and I’ll send your link."; $("email").focus(); return; }
-    try{
-      await api("session", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ action:"resend", email:email }) });
-      note.textContent = "If there’s a conversation in progress for " + email + ", your link is on its way. Check your inbox (and spam, just in case).";
-    }catch(e){ note.textContent = e.message; }
-  });
+  }
+  $("startBtn").addEventListener("click", begin);
+  ["name","email"].forEach(function(k){ $(k).addEventListener("keydown", function(e){ if (e.key === "Enter"){ e.preventDefault(); begin(); } }); });
 
   // ---------- attachments ----------
   function fileToBlock(file){
@@ -369,7 +362,7 @@
   $("notMeBtn").addEventListener("click", function(){
     try { localStorage.removeItem(TOKEN_KEY); } catch(e){}
     token = null; session = null; chat.textContent = "";
-    ["email","name","business"].forEach(function(k){ $(k).value = ""; });
+    ["email","name"].forEach(function(k){ $(k).value = ""; });
     show("start");
   });
 

@@ -9,11 +9,15 @@ const {
   loadSession,
   saveSession,
   jsonResponse,
-  sendResumeEmail,
 } = require("./_shared");
 
 function clip(v, n) {
   return String(v || "").trim().slice(0, n);
+}
+
+// "Becky", "becky reel", "Becky  Reel" all count as the same person.
+function firstName(n) {
+  return String(n || "").trim().toLowerCase().split(/\s+/)[0] || "";
 }
 
 function publicView(s) {
@@ -30,9 +34,9 @@ function publicView(s) {
   };
 }
 
-// GET  ?token=...                 -> restore a conversation
-// POST {action:"start", ...}      -> start (or route to resume if this email has one in progress)
-// POST {action:"resend", email}   -> email the resume link again
+// GET  ?token=...              -> restore a conversation (same browser)
+// POST {action:"start", ...}   -> resume an unfinished conversation for this
+//                                 name + email, or start a new one
 exports.handler = async (event) => {
   if (event.httpMethod === "GET") {
     const token = event.queryStringParameters && event.queryStringParameters.token;
@@ -49,34 +53,29 @@ exports.handler = async (event) => {
   } catch (e) {
     return jsonResponse(400, { error: "Malformed request." });
   }
+  if (body.action !== "start") return jsonResponse(400, { error: "Unknown action." });
 
   const email = clip(body.email, 200).toLowerCase();
+  const name = clip(body.name, 120);
+  if (!name) return jsonResponse(400, { error: "What should I call you?" });
   if (!EMAIL_RE.test(email)) return jsonResponse(400, { error: "That email doesn't look quite right. Mind checking it?" });
 
   const idx = emailIndexStore();
   const existingToken = await idx.get(emailKey(email));
   const existing = existingToken ? await loadSession(existingToken) : null;
 
-  if (body.action === "resend") {
-    if (existing && !existing.complete) {
-      try { await sendResumeEmail(existing, { returning: true }); } catch (e) { console.error("resend failed", e); }
-    }
-    // Same answer either way, so this can't be used to probe who has a conversation.
-    return jsonResponse(200, { status: "resume_sent" });
-  }
-
-  if (body.action !== "start") return jsonResponse(400, { error: "Unknown action." });
-
-  // An unfinished conversation already exists for this email: don't open it
-  // on an unverified device -- send the private link to their inbox instead.
+  // Same name + email with an unfinished conversation: pick up where they left off.
   if (existing && !existing.complete) {
-    try { await sendResumeEmail(existing, { returning: true }); } catch (e) { console.error("resume email failed", e); }
-    return jsonResponse(200, { status: "resume_sent" });
+    if (firstName(existing.name) === firstName(name)) {
+      return jsonResponse(200, { status: "resumed", session: publicView(existing) });
+    }
+    return jsonResponse(409, {
+      error: "There's already a conversation going with this email under a different name. Use the same name you started with, or text Jessi at 630-965-6827 and she'll sort it out.",
+    });
   }
 
-  const name = clip(body.name, 120);
-  if (!name) return jsonResponse(400, { error: "What should I call you?" });
-
+  // No conversation yet, or the last one is finished (a repeat client's next
+  // shoot): start a fresh one. The finished one stays in the archive.
   const brand = brandOf(body.brand).key;
   const session = {
     token: newToken(),
@@ -90,22 +89,11 @@ exports.handler = async (event) => {
     createdAt: new Date().toISOString(),
     history: [],
   };
-  session.history.push({
-    role: "user",
-    content: `Hi, I'm ${session.name}${session.business ? ` from ${session.business}` : ""}. I'm ready to talk about our shoot.`,
-  });
+  session.history.push({ role: "user", content: `Hi, I'm ${session.name}. I'm ready to talk about our shoot.` });
   session.history.push({ role: "assistant", content: `[PHASE:change]\n${openingMessage(session)}` });
 
   await saveSession(session);
   await idx.set(emailKey(email), session.token);
 
-  let linkSent = false;
-  try {
-    await sendResumeEmail(session);
-    linkSent = true;
-  } catch (e) {
-    console.error("welcome link email failed", e);
-  }
-
-  return jsonResponse(200, { status: "started", linkSent, session: publicView(session) });
+  return jsonResponse(200, { status: "started", session: publicView(session) });
 };

@@ -72,6 +72,9 @@ ${VOICE[brand.key]}
 
 NEVER say "I'd be happy to," "Certainly," "Great question," or generic motivational lines. Go easy on em dashes. Don't start several sentences in a row with "I."
 
+${session.business ? `THEIR BUSINESS: ${session.business}.` : `THEIR BUSINESS: not known yet. Your opening already asked what it's called. If they still haven't said, work it in naturally early on.`}
+When they tell you the business name (or you learn it), put [BUSINESS:the name] on its own line at the start of that reply, once. The app strips it.
+
 WHAT YOU NEED TO LEARN BY THE END (the topics, grouped into four phases):
 PHASE change:
  1. What's changed in the business in the last 6 to 12 months (new services, people, location, audience, positioning, ownership, growth or contraction).
@@ -97,6 +100,7 @@ HOW TO TALK:
 - If they brain dump, never make them reorganize it. Pull out what answers which topic, say what you caught, and only ask about what's still missing.
 - If an answer is thin, ask ONE light follow-up for a specific example, then keep moving. Never interrogate. The whole thing should take about 15 to 20 minutes.
 - They can attach screenshots, PDFs or text files (old photos, a website, a mood board, a calendar). React to them naturally and fold them in.
+- You can't open links. If they paste a Pinterest board or any other URL, thank them, say you'll look through it when you plan (it's saved with the conversation), and never describe what's on it. If they want a reaction now, invite a screenshot or two.
 - Never invent facts about their business. If something's unclear, ask.
 
 BOUNDARIES: You don't build the shot list, quote prices, change what's in their package, or promise deliverables in this chat. That's what you do after you review everything. If they ask, tell them warmly that you'll take everything from this conversation and come back with a plan.
@@ -117,7 +121,7 @@ Here's the deal: I don't shoot to shoot. Every photo and clip we make together s
 
 Ramble, brain dump, paste the chaos. Zero wrong answers. And if life happens mid-chat, everything saves, so you can pick right back up.
 
-Big picture first: what's changed in your business over the last 6 to 12 months?`;
+${session.business ? `Big picture first: what's changed at ${session.business} over the last 6 to 12 months?` : `Big picture first: tell me about your business. What's it called, and what's changed in the last 6 to 12 months?`}`;
   }
   return `Hi ${first}, it's Jessi. Thank you for taking a little time with me${shoot}.
 
@@ -125,7 +129,7 @@ I don't want to show up and just take pictures. I want every photo and video we 
 
 There are no wrong answers. Write as much or as little as you like, and if you need to step away, everything saves so you can pick up right where you left off.
 
-Let's start with the big picture. What has changed in your business over the last year or so?`;
+${session.business ? `Let's start with the big picture. What has changed at ${session.business} over the last year or so?` : `Let's start with the big picture. Tell me a little about your business: what's it called, and what has changed in it over the last year or so?`}`;
 }
 
 const BRIEF_SYSTEM_PROMPT = `You are prepping Jessi Cabanin, a brand strategist and photographer/videographer, to plan a client's content shoot. From the pre-shoot conversation, write HER a skimmable internal strategy brief. Her rule: no shot without a home. Every asset should map to a goal, a destination and a format.
@@ -161,7 +165,11 @@ function parseTags(raw) {
   text = text.replace(/\[PHASE:[a-z]+\]/gi, "");
   const complete = /\[INTAKE_COMPLETE\]/i.test(text);
   text = text.replace(/\[INTAKE_COMPLETE\]/gi, "");
-  return { text: text.trim(), phase, complete };
+  let business = null;
+  const bm = text.match(/\[BUSINESS:([^\]\n]{1,160})\]/i);
+  if (bm) business = bm[1].trim();
+  text = text.replace(/\[BUSINESS:[^\]\n]*\]/gi, "");
+  return { text: text.trim(), phase, complete, business };
 }
 
 function contentToText(content) {

@@ -78,6 +78,7 @@ exports.handler = async (event) => {
 
   const parsed = parseTags(raw);
   if (parsed.phase) session.phase = parsed.phase;
+  if (parsed.business && !session.business) session.business = parsed.business;
   if (parsed.complete) {
     session.complete = true;
     session.phase = "wrap";
