@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Pre-Shoot Conversation · Jessi Cabanin</title>
+<meta name="robots" content="noindex" />
+<link rel="icon" href="assets/hbm-logo-white.png" />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600&display=swap" rel="stylesheet" />
+<style>
+  /* HBM is the default look; [data-brand="twtf"] swaps the accent system. */
+  :root{
+    --navy:#2E4968; --navy-soft:#5b6878; --page:#F3F1F0; --card:#FFFFFF;
+    --accent:#9C5F66; --accent-strong:#2E4968; --on-accent:#FFFFFF;
+    --bubble:#EFE3E3; --pop:#DBB3B3; --line:rgba(46,73,104,0.14);
+    --font:'Montserrat',"Helvetica Neue",Arial,sans-serif;
+  }
+  [data-brand="twtf"]{
+    --page:#F8E6E5; --accent:#D1007A; --accent-strong:#FF0091; --bubble:#F8E6E5; --pop:#EFFF72;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--font);background:var(--page);color:var(--navy);-webkit-font-smoothing:antialiased;
+    display:flex;justify-content:center;
+    padding:max(16px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
+  .shell{width:100%;max-width:680px;display:flex;flex-direction:column;background:var(--card);border-radius:20px;overflow:hidden;
+    height:calc(100dvh - 32px);max-height:900px;box-shadow:0 1px 0 var(--line)}
+  .shell.flow{height:auto;max-height:none}
+
+  header{background:var(--navy);color:#fff;padding:20px 24px 18px;flex-shrink:0}
+  .head-top{display:flex;justify-content:space-between;align-items:center;gap:16px}
+  .eyebrow{font-size:10.5px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;opacity:.85}
+  .logo{height:38px;width:auto;display:block}
+  header h1{font-size:clamp(18px,3.6vw,22px);font-weight:900;text-transform:uppercase;letter-spacing:.01em;line-height:1.15;margin-top:14px}
+  header h1 .hl{color:var(--pop)}
+  .phases{display:flex;gap:6px;margin-top:16px}
+  .phase{flex:1;height:5px;border-radius:99px;background:rgba(255,255,255,.18);transition:background .3s}
+  .phase.is-active{background:var(--pop)}
+  .phase.is-done{background:#fff}
+  .phases[hidden]{display:none}
+
+  /* START */
+  .start{padding:28px 24px 32px;display:flex;flex-direction:column;gap:18px;overflow-y:auto}
+  .start p{font-size:15px;line-height:1.65;font-weight:500;max-width:56ch}
+  .field{display:flex;flex-direction:column;gap:6px}
+  .field label{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+  .field .hint{font-size:12.5px;color:var(--navy-soft);font-weight:500;line-height:1.5}
+  .field input{font:inherit;font-size:16px;font-weight:500;color:var(--navy);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;outline:none;background:#fff}
+  .field input:focus{border-color:var(--accent-strong)}
+  .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+  .btn{font:inherit;font-weight:800;font-size:13px;letter-spacing:.1em;text-transform:uppercase;border-radius:999px;padding:15px 24px;cursor:pointer;border:2px solid var(--accent-strong);background:var(--accent-strong);color:var(--on-accent);transition:transform .15s,opacity .2s}
+  .btn:hover{transform:translateY(-1px)}
+  .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+  .btn.ghost{background:transparent;color:var(--navy)}
+  .btn:focus-visible,.linkish:focus-visible,.send:focus-visible,.attach-btn:focus-visible{outline:3px solid var(--pop);outline-offset:2px}
+  .linkish{background:none;border:0;font:inherit;font-size:13px;font-weight:700;color:var(--accent);text-decoration:underline;text-underline-offset:3px;cursor:pointer;align-self:flex-start}
+  .note{font-size:13.5px;font-weight:600;line-height:1.55;border-radius:12px;padding:12px 14px;background:var(--bubble)}
+  .note:empty{display:none}
+
+  /* CHAT */
+  .chat{flex:1;overflow-y:auto;padding:22px;display:flex;flex-direction:column;gap:14px}
+  .chat.review{flex:none;max-height:380px;border:1px solid var(--line);border-radius:14px;margin-top:20px;text-align:left;width:100%}
+  .row{display:flex}
+  .row.jessi{justify-content:flex-start}
+  .row.client{justify-content:flex-end}
+  .stack{display:flex;flex-direction:column;max-width:84%;min-width:0}
+  .row.client .stack{align-items:flex-end}
+  .who{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin:0 4px 4px}
+  .row.client .who{color:var(--navy-soft)}
+  .bubble{padding:13px 16px;border-radius:16px;font-size:15px;line-height:1.55;font-weight:500;white-space:pre-wrap;overflow-wrap:anywhere}
+  .jessi .bubble{background:var(--bubble);color:var(--navy);border-bottom-left-radius:4px}
+  .client .bubble{background:var(--navy);color:#fff;border-bottom-right-radius:4px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .chip{font-size:11px;font-weight:700;padding:5px 10px;border-radius:99px;background:rgba(46,73,104,.08)}
+  .typing .bubble{display:flex;gap:5px;align-items:center;padding:16px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--navy-soft);opacity:.4;animation:blink 1.2s infinite}
+  .dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,60%,100%{opacity:.3;transform:none}30%{opacity:1;transform:translateY(-3px)}}
+  @media (prefers-reduced-motion:reduce){.dot{animation:none;opacity:.6}.btn:hover{transform:none}}
+
+  .composer-wrap{border-top:1px solid var(--line);background:#fff}
+  .saved{font-size:11.5px;font-weight:600;color:var(--navy-soft);padding:10px 18px 0;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .pending{display:flex;flex-wrap:wrap;gap:8px;padding:10px 16px 0}
+  .pending:empty{display:none}
+  .pchip{display:flex;align-items:center;gap:6px;background:var(--bubble);font-size:12px;font-weight:700;padding:6px 8px 6px 12px;border-radius:99px}
+  .pchip button{background:rgba(46,73,104,.15);border:0;width:18px;height:18px;border-radius:50%;cursor:pointer;color:var(--navy)}
+  .composer{padding:12px 16px 16px;display:flex;gap:10px;align-items:flex-end}
+  .attach-btn{flex-shrink:0;width:46px;height:46px;border-radius:14px;border:1.5px solid var(--line);background:#fff;color:var(--navy-soft);cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .attach-btn:hover{border-color:var(--accent-strong);color:var(--accent-strong)}
+  textarea{flex:1;min-width:0;resize:none;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;font:inherit;font-size:16px;font-weight:500;color:var(--navy);line-height:1.4;max-height:160px;outline:none}
+  textarea:focus{border-color:var(--accent-strong)}
+  textarea::placeholder{color:var(--navy-soft);opacity:.7}
+  .send{background:var(--accent-strong);color:var(--on-accent);border:0;border-radius:14px;padding:0 18px;height:46px;font:inherit;font-weight:800;font-size:13px;letter-spacing:.08em;cursor:pointer;white-space:nowrap}
+  .send:disabled{opacity:.4;cursor:not-allowed}
+
+  /* DONE */
+  .done{padding:36px 24px 44px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px}
+  .pill{font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;padding:7px 16px;border-radius:99px;background:var(--bubble)}
+  .done h2{font-size:clamp(22px,4.5vw,28px);font-weight:900;line-height:1.15;letter-spacing:-.01em}
+  .done p{font-size:15px;line-height:1.65;font-weight:500;max-width:46ch}
+  .done .actions{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:8px}
+  .status-line{font-size:13px;font-weight:600;color:var(--navy-soft);min-height:18px}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="shell" id="shell">
+  <header>
+    <div class="head-top">
+      <div class="eyebrow" id="eyebrow">Pre-shoot conversation</div>
+      <img class="logo" id="logo" src="assets/hbm-logo-white.png" alt="Haven Built Media" />
+    </div>
+    <h1 id="headline">Before we pick up a camera, <span class="hl">let's talk about why.</span></h1>
+    <div class="phases" id="phases" hidden aria-label="Conversation progress">
+      <div class="phase" data-p="change"></div><div class="phase" data-p="goal"></div><div class="phase" data-p="gaps"></div><div class="phase" data-p="people"></div>
+    </div>
+  </header>
+
+  <!-- START -->
+  <section class="start" id="start" hidden>
+    <p id="startIntro">This isn't a form. It's a conversation with me about what's changing in your business, what's coming up, and where these photos and videos will actually be used, so every frame we take has a job. Type as much or as little as you like. Everything saves as you go.</p>
+    <div class="field">
+      <label for="email">Your email</label>
+      <span class="hint">I'll send you a private link so you can step away and pick up right where you left off, on any device.</span>
+      <input type="email" id="email" autocomplete="email" inputmode="email" placeholder="you@yourbusiness.com" />
+    </div>
+    <div class="two">
+      <div class="field"><label for="name">Your name</label><input type="text" id="name" autocomplete="name" /></div>
+      <div class="field"><label for="business">Your business</label><input type="text" id="business" autocomplete="organization" /></div>
+    </div>
+    <button class="btn" id="startBtn" type="button">Start our conversation</button>
+    <button class="linkish" id="resendBtn" type="button">Already started? Email me my link</button>
+    <div class="note" id="startNote" role="status"></div>
+  </section>
+
+  <!-- CHAT -->
+  <div class="chat" id="chat" hidden></div>
+  <div class="composer-wrap" id="composerWrap" hidden>
+    <div class="saved" id="saved"><span>Saved as you go<span id="savedEmail"></span></span><button class="linkish" id="notMeBtn" type="button" style="font-size:11.5px">Not you? Start fresh</button></div>
+    <div class="pending" id="pending"></div>
+    <div class="composer">
+      <button class="attach-btn" id="attachBtn" type="button" title="Attach a file" aria-label="Attach a file">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+      </button>
+      <input type="file" id="fileInput" multiple accept="image/png,image/jpeg,image/gif,image/webp,application/pdf,text/plain,text/csv,text/markdown,.md" hidden />
+      <label for="input" class="sr" hidden>Your message</label>
+      <textarea id="input" rows="1" placeholder="Type like you're talking to me…"></textarea>
+      <button class="send" id="sendBtn" type="button">SEND</button>
+    </div>
+  </div>
+
+  <!-- DONE -->
+  <section class="done" id="done" hidden>
+    <div class="pill">All set</div>
+    <h2 id="doneTitle">Thank you. I've got what I need.</h2>
+    <p id="doneCopy">I'm going to sit with everything you shared and come back to you with a plan for the shoot: what we'll capture, and where each piece will live.</p>
+    <div class="actions">
+      <button class="btn" id="pdfBtn" type="button">Send me a PDF</button>
+      <div class="status-line" id="pdfStatus" role="status"></div>
+      <button class="linkish" id="reviewBtn" type="button">View our conversation</button>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+  var qs = new URLSearchParams(location.search);
+  var TOKEN_KEY = "swp-token";
+  var MAX_FILES = 3, MAX_BYTES = 3 * 1024 * 1024, MAX_TEXT = 50000;
+  var PHASES = ["change","goal","gaps","people"];
+
+  var $ = function(id){ return document.getElementById(id); };
+  var shell=$("shell"), start=$("start"), chat=$("chat"), composerWrap=$("composerWrap"), done=$("done");
+  var input=$("input"), sendBtn=$("sendBtn"), fileInput=$("fileInput"), pendingEl=$("pending");
+
+  var token = null, session = null, busy = false, pending = [], brand = "hbm";
+
+  // ---------- brand ----------
+  function applyBrand(b){
+    brand = b === "twtf" ? "twtf" : "hbm";
+    document.documentElement.setAttribute("data-brand", brand);
+    var logo = $("logo");
+    logo.src = "assets/" + brand + "-logo-white.png";
+    logo.alt = brand === "twtf" ? "This Way to Fabulous" : "Haven Built Media";
+    document.querySelector('link[rel="icon"]').href = logo.src;
+    if (brand === "twtf"){
+      $("headline").innerHTML = 'Let’s make this shoot <span class="hl">mean something.</span>';
+      $("startIntro").textContent = "This isn’t a form. It’s you and me, talking it out: what’s changing in your biz, what’s coming up, and where these photos and videos will actually live, so every frame has a job. Brain dump away. Everything saves as you go.";
+      $("doneTitle").textContent = "Okay. I’ve got SO much to work with.";
+      $("doneCopy").textContent = "I’m going to sit with everything you shared and come back with a plan for our shoot: what we’ll capture, and where every piece will live.";
+      input.placeholder = "Ramble away, I’m listening…";
+    }
+  }
+
+  // ---------- progress ----------
+  function setPhase(p){
+    var idx = PHASES.indexOf(p);
+    document.querySelectorAll(".phase").forEach(function(el){
+      var pos = PHASES.indexOf(el.dataset.p);
+      el.classList.remove("is-active","is-done");
+      if (p === "wrap" || pos < idx) el.classList.add("is-done");
+      else if (pos === idx) el.classList.add("is-active");
+    });
+  }
+
+  // ---------- views ----------
+  function show(view){
+    start.hidden = view !== "start";
+    chat.hidden = view !== "chat";
+    composerWrap.hidden = view !== "chat";
+    done.hidden = view !== "done";
+    $("phases").hidden = view === "start";
+    shell.classList.toggle("flow", view !== "chat");
+    chat.classList.remove("review");
+  }
+
+  function bubble(who, text, names){
+    var row = document.createElement("div"); row.className = "row " + who;
+    var stack = document.createElement("div"); stack.className = "stack";
+    var label = document.createElement("div"); label.className = "who";
+    label.textContent = who === "jessi" ? "Jessi" : ((session && session.name) ? session.name.split(/\s+/)[0] : "You");
+    stack.appendChild(label);
+    if (text){ var b = document.createElement("div"); b.className = "bubble"; b.textContent = text; stack.appendChild(b); }
+    if (names && names.length){
+      var c = document.createElement("div"); c.className = "chips";
+      names.forEach(function(n){ var s = document.createElement("span"); s.className = "chip"; s.textContent = "Attached: " + n; c.appendChild(s); });
+      stack.appendChild(c);
+    }
+    row.appendChild(stack); chat.appendChild(row); chat.scrollTop = chat.scrollHeight;
+  }
+  function typing(on){
+    var t = $("typing");
+    if (on && !t){
+      var row = document.createElement("div"); row.className = "row jessi typing"; row.id = "typing";
+      row.innerHTML = '<div class="stack"><div class="bubble" aria-label="Jessi is typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div></div>';
+      chat.appendChild(row); chat.scrollTop = chat.scrollHeight;
+    } else if (!on && t) t.remove();
+  }
+
+  function renderSession(s){
+    session = s; token = s.token;
+    try { localStorage.setItem(TOKEN_KEY, token); } catch(e){}
+    applyBrand(s.brand);
+    chat.textContent = "";
+    s.messages.forEach(function(m){ bubble(m.who, m.text); });
+    $("savedEmail").textContent = s.email ? " · your link is in " + s.email : "";
+    $("notMeBtn").textContent = "Not " + (s.name ? s.name.split(/\s+/)[0] : "you") + "? Start fresh";
+    setPhase(s.complete ? "wrap" : (s.phase || "change"));
+    if (s.complete){ show("done"); } else { show("chat"); input.focus(); }
+  }
+
+  async function api(path, opts){
+    var res = await fetch("/.netlify/functions/" + path, opts);
+    var data = await res.json().catch(function(){ return {}; });
+    if (!res.ok){ var err = new Error(data.error || "Something went wrong."); err.status = res.status; throw err; }
+    return data;
+  }
+
+  // ---------- start / resume ----------
+  function prefill(){
+    ["email","name","business"].forEach(function(k){ if (qs.get(k)) $(k).value = qs.get(k); });
+  }
+
+  $("startBtn").addEventListener("click", async function(){
+    var note = $("startNote"), btn = this;
+    var email = $("email").value.trim(), name = $("name").value.trim(), business = $("business").value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ note.textContent = "Mind double-checking your email? That’s how you’ll get back to this."; $("email").focus(); return; }
+    if (!name){ note.textContent = "What should I call you?"; $("name").focus(); return; }
+    btn.disabled = true; note.textContent = "";
+    try{
+      var data = await api("session", { method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ action:"start", email:email, name:name, business:business, brand:brand, shoot: qs.get("shoot") || "" }) });
+      if (data.status === "resume_sent"){
+        note.textContent = "Looks like we already started talking! I just emailed " + email + " a private link to pick up right where you left off.";
+      } else {
+        renderSession(data.session);
+      }
+    }catch(e){ note.textContent = e.message; }
+    btn.disabled = false;
+  });
+
+  $("resendBtn").addEventListener("click", async function(){
+    var note = $("startNote"), email = $("email").value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ note.textContent = "Pop your email in above and tap this again, and I’ll send your link."; $("email").focus(); return; }
+    try{
+      await api("session", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ action:"resend", email:email }) });
+      note.textContent = "If there’s a conversation in progress for " + email + ", your link is on its way. Check your inbox (and spam, just in case).";
+    }catch(e){ note.textContent = e.message; }
+  });
+
+  // ---------- attachments ----------
+  function fileToBlock(file){
+    return new Promise(function(resolve, reject){
+      var isImg = /^image\/(png|jpeg|gif|webp)$/.test(file.type), isPdf = file.type === "application/pdf";
+      var isText = /^text\//.test(file.type) || /\.(txt|md|csv)$/i.test(file.name);
+      var r = new FileReader();
+      if (isText){
+        r.onload = function(){ resolve({ type:"text", text:"[Attached file: " + file.name + "]\n\n" + String(r.result).slice(0, MAX_TEXT) }); };
+        r.onerror = function(){ reject(new Error("I couldn’t read “" + file.name + "”. Mind pasting it in instead?")); };
+        r.readAsText(file); return;
+      }
+      if (!isImg && !isPdf){ reject(new Error("I can’t open “" + file.name + "”. A screenshot, PDF, or pasted text works best.")); return; }
+      r.onload = function(){
+        var data = String(r.result).split(",")[1];
+        resolve(isImg ? { type:"image", source:{ type:"base64", media_type:file.type, data:data } }
+                      : { type:"document", source:{ type:"base64", media_type:"application/pdf", data:data } });
+      };
+      r.onerror = function(){ reject(new Error("I couldn’t read “" + file.name + "”. Try again?")); };
+      r.readAsDataURL(file);
+    });
+  }
+  function renderPending(){
+    pendingEl.textContent = "";
+    pending.forEach(function(f, i){
+      var c = document.createElement("div"); c.className = "pchip";
+      var l = document.createElement("span"); l.textContent = f.name;
+      var x = document.createElement("button"); x.type = "button"; x.textContent = "×"; x.setAttribute("aria-label", "Remove " + f.name);
+      x.addEventListener("click", function(){ pending.splice(i, 1); renderPending(); });
+      c.appendChild(l); c.appendChild(x); pendingEl.appendChild(c);
+    });
+  }
+  $("attachBtn").addEventListener("click", function(){ fileInput.click(); });
+  fileInput.addEventListener("change", async function(e){
+    var files = Array.from(e.target.files || []); fileInput.value = "";
+    for (var i = 0; i < files.length; i++){
+      var f = files[i];
+      if (pending.length >= MAX_FILES){ bubble("jessi", "Let’s keep it to " + MAX_FILES + " files per message. Send these and add more after!"); break; }
+      if (f.size > MAX_BYTES){ bubble("jessi", "“" + f.name + "” is a little too big for me (3MB max). A screenshot works great instead."); continue; }
+      try { pending.push({ name: f.name, block: await fileToBlock(f) }); } catch(err){ bubble("jessi", err.message); }
+    }
+    renderPending();
+  });
+
+  // ---------- send ----------
+  async function send(){
+    var text = input.value.trim();
+    if ((!text && !pending.length) || busy || !token) return;
+    busy = true; sendBtn.disabled = true;
+    var names = pending.map(function(p){ return p.name; });
+    var blocks = pending.map(function(p){ return p.block; });
+    bubble("client", text, names);
+    input.value = ""; input.style.height = "auto"; pending = []; renderPending();
+    typing(true);
+    try{
+      var data = await api("chat", { method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ token: token, text: text, attachments: blocks, attachmentNames: names }) });
+      typing(false);
+      if (data.text) bubble("jessi", data.text);
+      setPhase(data.phase);
+      if (data.complete){
+        session.complete = true;
+        setTimeout(function(){ show("done"); setPhase("wrap"); shell.scrollIntoView({ behavior:"smooth", block:"start" }); }, 1600);
+      }
+    }catch(e){
+      typing(false);
+      if (e.status === 409){ show("done"); }
+      else {
+        bubble("jessi", e.message || "Something glitched on my end. Give that another send in a moment?");
+        if (text){ input.value = text; }
+      }
+    }
+    busy = false; sendBtn.disabled = false;
+    if (!composerWrap.hidden) input.focus();
+  }
+  sendBtn.addEventListener("click", send);
+  input.addEventListener("keydown", function(e){ if (e.key === "Enter" && !e.shiftKey && !e.isComposing){ e.preventDefault(); send(); } });
+  input.addEventListener("input", function(){ input.style.height = "auto"; input.style.height = Math.min(input.scrollHeight, 160) + "px"; });
+
+  $("notMeBtn").addEventListener("click", function(){
+    try { localStorage.removeItem(TOKEN_KEY); } catch(e){}
+    token = null; session = null; chat.textContent = "";
+    ["email","name","business"].forEach(function(k){ $(k).value = ""; });
+    show("start");
+  });
+
+  // ---------- done ----------
+  $("pdfBtn").addEventListener("click", async function(){
+    var btn = this, st = $("pdfStatus");
+    btn.disabled = true; st.textContent = "Putting your PDF together…";
+    try{
+      var data = await api("client-copy", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ token: token }) });
+      st.textContent = "Sent to " + data.email + ". Check your inbox!";
+      btn.textContent = "Send it again";
+    }catch(e){ st.textContent = e.message; }
+    btn.disabled = false;
+  });
+  $("reviewBtn").addEventListener("click", function(){
+    if (chat.parentNode !== done){ done.appendChild(chat); }
+    var showing = !chat.hidden;
+    chat.hidden = showing; chat.classList.toggle("review", !showing);
+    this.textContent = showing ? "View our conversation" : "Hide our conversation";
+  });
+
+  // ---------- init ----------
+  (async function init(){
+    applyBrand(qs.get("brand") || location.hash.replace("#",""));
+    prefill();
+    var t = qs.get("s");
+    if (!t){ try { t = localStorage.getItem(TOKEN_KEY); } catch(e){} }
+    if (qs.get("s")){
+      // Keep the private link out of the address bar once it's been used.
+      qs.delete("s"); history.replaceState(null, "", location.pathname + (qs.toString() ? "?" + qs : "") + location.hash);
+    }
+    if (t){
+      try{
+        var s = await api("session?token=" + encodeURIComponent(t));
+        renderSession(s); return;
+      }catch(e){
+        try { localStorage.removeItem(TOKEN_KEY); } catch(_){}
+        if (e.status !== 404){ $("startNote").textContent = "I couldn’t load your conversation just now. Try your link again in a moment."; }
+      }
+    }
+    show("start");
+  })();
+})();
+</script>
+</body>
+</html>

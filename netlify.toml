@@ -1,0 +1,10 @@
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+  # pdfkit reads its built-in font metrics from disk, so it can't be bundled.
+  external_node_modules = ["pdfkit"]
+  # Logos are embedded in the client PDF.
+  included_files = ["public/assets/*.png"]
