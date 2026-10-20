@@ -39,6 +39,10 @@ Example: `https://YOUR-SITE.netlify.app/?shoot=HERO%20Session%20on%20Nov%209&nam
    - Optional: `REPLY_TO_EMAIL`, `MODEL`
 3. Deploy. Netlify Blobs (where conversations are stored) needs no setup.
 
+## Live dashboard
+
+Conversations feed the TWTF Live Dashboard (submission-dashboard.netlify.app) as **HBM Pre-Shoot Prep** and **TWTF Pre-Shoot Prep**, with the strategy brief shown above each conversation. The dashboard calls `/.netlify/functions/store` with this site's `ADMIN_TOKEN`. On the dashboard site, set `SHOOT_PREP_URL` (this site's URL) and `SHOOT_PREP_CODE` (this site's `ADMIN_TOKEN`).
+
 ## Header graphic
 
 Same size as the Wizard and Brand Therapy banners: **1280 x 420 px**. Save them as `public/assets/hbm-header.png` and `public/assets/twtf-header.png`, push, and they replace the navy logo band automatically. Keep the important stuff out of the far edges; it scales down on phones.
