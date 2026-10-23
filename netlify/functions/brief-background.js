@@ -1,5 +1,6 @@
 const Anthropic = require("@anthropic-ai/sdk");
 const {
+  connectBlobs,
   MODEL,
   BRIEF_SYSTEM_PROMPT,
   brandOf,
@@ -18,6 +19,7 @@ const {
 // away and lets this run for up to 15 minutes. Generates Jessi's strategy
 // brief, saves it to the session, and emails it to her with the transcript.
 exports.handler = async (event) => {
+  connectBlobs(event);
   let token;
   try {
     ({ token } = JSON.parse(event.body || "{}"));

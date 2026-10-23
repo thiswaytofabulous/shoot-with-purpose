@@ -1,4 +1,4 @@
-const { sessionsStore, displayMessages, jsonResponse } = require("./_shared");
+const { connectBlobs, sessionsStore, displayMessages, jsonResponse } = require("./_shared");
 
 // Feed for the TWTF Live Dashboard (submission-dashboard.netlify.app).
 // Same contract as the Wizards and Brand Bestie: POST {action:"list", adminCode}
@@ -6,6 +6,7 @@ const { sessionsStore, displayMessages, jsonResponse } = require("./_shared");
 // dashboard can show HBM and TWTF as separate rows like the other tools.
 // The code is this site's ADMIN_TOKEN (or ADMIN_CODE if you'd rather set that).
 exports.handler = async (event) => {
+  connectBlobs(event);
   if (event.httpMethod !== "POST") return jsonResponse(405, { error: "POST only" });
 
   let body;

@@ -1,4 +1,4 @@
-const { sessionsStore, displayMessages, brandOf, jsonResponse } = require("./_shared");
+const { connectBlobs, sessionsStore, displayMessages, brandOf, jsonResponse } = require("./_shared");
 
 // Token-gated archive of every conversation (in progress and complete).
 // Set ADMIN_TOKEN to a long random string in Netlify env vars.
@@ -8,6 +8,7 @@ function isAuthorized(event) {
 }
 
 exports.handler = async (event) => {
+  connectBlobs(event);
   if (event.httpMethod !== "GET") return jsonResponse(405, { error: "Method not allowed" });
   if (!process.env.ADMIN_TOKEN) return jsonResponse(500, { error: "Admin access isn't configured yet (set ADMIN_TOKEN)." });
   if (!isAuthorized(event)) return jsonResponse(401, { error: "Unauthorized" });

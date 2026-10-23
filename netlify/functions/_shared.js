@@ -1,7 +1,7 @@
 const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
-const { getStore } = require("@netlify/blobs");
+const { getStore, connectLambda } = require("@netlify/blobs");
 
 // ---------------------------------------------------------------------------
 // Config
@@ -201,6 +201,12 @@ function transcriptText(session) {
 // ---------------------------------------------------------------------------
 // Storage (Netlify Blobs)
 // ---------------------------------------------------------------------------
+
+// These are Lambda-style handlers (exports.handler), so Blobs isn't wired up
+// automatically. Every handler calls this first or getStore() throws.
+function connectBlobs(event) {
+  connectLambda(event);
+}
 
 function sessionsStore() {
   return getStore("sessions");
@@ -457,6 +463,7 @@ module.exports = {
   contentToText,
   displayMessages,
   transcriptText,
+  connectBlobs,
   sessionsStore,
   emailIndexStore,
   emailKey,

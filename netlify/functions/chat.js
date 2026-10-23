@@ -1,5 +1,6 @@
 const Anthropic = require("@anthropic-ai/sdk");
 const {
+  connectBlobs,
   MODEL,
   MAX_MESSAGES,
   MAX_USER_CHARS,
@@ -31,6 +32,7 @@ function cleanAttachments(list) {
 }
 
 exports.handler = async (event) => {
+  connectBlobs(event);
   if (event.httpMethod !== "POST") return jsonResponse(405, { error: "Method not allowed" });
   if (!process.env.ANTHROPIC_API_KEY) return jsonResponse(500, { error: "Server is not configured (missing ANTHROPIC_API_KEY)." });
 

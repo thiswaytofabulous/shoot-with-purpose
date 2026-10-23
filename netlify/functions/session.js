@@ -1,4 +1,5 @@
 const {
+  connectBlobs,
   EMAIL_RE,
   brandOf,
   openingMessage,
@@ -38,6 +39,7 @@ function publicView(s) {
 // POST {action:"start", ...}   -> resume an unfinished conversation for this
 //                                 name + email, or start a new one
 exports.handler = async (event) => {
+  connectBlobs(event);
   if (event.httpMethod === "GET") {
     const token = event.queryStringParameters && event.queryStringParameters.token;
     const s = await loadSession(token);

@@ -1,4 +1,5 @@
 const {
+  connectBlobs,
   brandOf,
   loadSession,
   saveSession,
@@ -13,6 +14,7 @@ const {
 // "Send me a PDF": emails the client a PDF of their own conversation. Only
 // what they and Jessi said -- never the internal brief.
 exports.handler = async (event) => {
+  connectBlobs(event);
   if (event.httpMethod !== "POST") return jsonResponse(405, { error: "Method not allowed" });
   if (!process.env.RESEND_API_KEY) return jsonResponse(500, { error: "Email isn't set up yet." });
 
