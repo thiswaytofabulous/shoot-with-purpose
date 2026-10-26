@@ -83,6 +83,7 @@ exports.handler = async (event) => {
   if (parsed.business && !session.business) session.business = parsed.business;
   if (parsed.complete) {
     session.complete = true;
+    session.briefRequestedAt = new Date().toISOString();
     session.phase = "wrap";
     session.completedAt = new Date().toISOString();
   }

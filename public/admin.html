@@ -81,7 +81,7 @@
 <script>
 (function(){
   var $ = function(id){ return document.getElementById(id); };
-  var token = "", all = [], current = null;
+  var token = "", all = [], current = null, poll = null;
   var esc = function(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : String(s); return d.innerHTML; };
   var fmt = function(iso){ try { return new Date(iso).toLocaleString(undefined, { dateStyle:"medium", timeStyle:"short" }); } catch(e){ return iso || ""; } };
   var PH = { change:"What's changing", goal:"The goal", gaps:"Gaps + destinations", people:"People + camera", wrap:"Wrapping up" };
@@ -124,9 +124,17 @@
     var st = $("dbstatus");
     st.hidden = !r.complete;
     st.className = "bstatus" + (r.briefError ? " bad" : "");
-    st.textContent = r.briefError ? r.briefError
-      : r.briefSentAt ? "Brief emailed to you " + fmt(r.briefSentAt) + "."
-      : "The brief hasn't been emailed yet.";
+    var ago = function(iso){ return iso ? (Date.now() - new Date(iso).getTime()) / 60000 : Infinity; };
+    var working = false;
+    if (r.briefError) st.textContent = r.briefError;
+    else if (r.briefSentAt) st.textContent = "Brief emailed to you " + fmt(r.briefSentAt) + ".";
+    else if (r.briefStartedAt && ago(r.briefStartedAt) < 5){ st.textContent = "Writing and sending the brief…"; working = true; }
+    else if (r.briefStartedAt){ st.className = "bstatus bad"; st.textContent = "The brief job started " + fmt(r.briefStartedAt) + " but never finished (it likely timed out). Check Netlify → Logs → Functions → brief-background."; }
+    else if (r.briefRequestedAt && ago(r.briefRequestedAt) < 2){ st.textContent = "Starting the brief…"; working = true; }
+    else { st.className = "bstatus bad"; st.textContent = "The brief job never started" + (r.briefRequestedAt ? " (requested " + fmt(r.briefRequestedAt) + ")" : "") + ". Hit Send brief now. If this message comes back, background functions aren't running on this site."; }
+    clearTimeout(poll);
+    if (working) poll = setTimeout(function(){ if (!$("detail").hidden) openDetail(current); }, 10000);
+    $("resendBtn").disabled = working;
     $("resendBtn").hidden = !r.complete;
     $("resendBtn").textContent = r.briefSentAt ? "Resend brief" : "Send brief now";
     $("dmeta").innerHTML = "<strong>" + esc(r.name) + (r.business ? " · " + esc(r.business) : "") + "</strong><br/>"
@@ -134,7 +142,7 @@
       + (r.complete ? "Finished " + fmt(r.completedAt) : "In progress · last active " + fmt(r.updatedAt));
     $("dbrief").innerHTML = r.brief
       ? r.brief.split(/\n\s*\n/).filter(function(p){ return p.trim(); }).map(function(p){ return "<p>" + esc(p).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>") + "</p>"; }).join("")
-      : '<p class="empty">' + (r.complete ? "The brief is still generating. Refresh in a minute." : "The brief is written when they finish the conversation.") + "</p>";
+      : '<p class="empty">' + (r.complete ? "No brief yet." : "The brief is written when they finish the conversation.") + "</p>";
     $("dconvo").innerHTML = r.messages.map(function(m){
       var c = m.who === "client";
       return '<div class="b-row" style="text-align:' + (c ? "right" : "left") + '"><div class="b-who" style="color:' + (c ? "#5b6878" : "#9C5F66") + '">' + (c ? esc(r.name) : "Jessi") + '</div>'
@@ -145,12 +153,12 @@
 
   $("resendBtn").addEventListener("click", async function(){
     var btn = this, st = $("dbstatus");
-    btn.disabled = true; st.hidden = false; st.className = "bstatus"; st.textContent = "Writing and sending the brief. This takes about a minute…";
+    btn.disabled = true; st.hidden = false; st.className = "bstatus"; st.textContent = "Starting the brief…";
     try{
       var res = await fetch("/.netlify/functions/admin-intakes?token=" + encodeURIComponent(token) + "&id=" + encodeURIComponent(current), { method:"POST" });
       var data = await res.json().catch(function(){ return {}; });
       if (!res.ok){ st.className = "bstatus bad"; st.textContent = data.error || "Something went wrong."; btn.disabled = false; return; }
-      setTimeout(function(){ btn.disabled = false; openDetail(current); }, 60000);
+      openDetail(current);
     }catch(e){ st.className = "bstatus bad"; st.textContent = "Couldn't reach the server."; btn.disabled = false; }
   });
   $("backBtn").addEventListener("click", function(){ $("detail").hidden = true; $("listWrap").hidden = false; });

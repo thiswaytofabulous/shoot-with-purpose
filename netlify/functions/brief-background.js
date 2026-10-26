@@ -35,7 +35,18 @@ exports.handler = async (event) => {
   }
   const session = await loadSession(token);
   if (!session || !session.complete || session.briefSentAt) return;
+  // Proof the job actually ran, for the admin status line.
+  session.briefStartedAt = new Date().toISOString();
+  delete session.briefError;
+  await saveSession(session);
+  try {
+    await writeAndSend(session);
+  } catch (e) {
+    await fail(session, "The brief job crashed", e);
+  }
+};
 
+async function writeAndSend(session) {
   const transcript = transcriptText(session);
   let brief = session.brief;
   if (!brief) {
@@ -88,4 +99,4 @@ exports.handler = async (event) => {
   } catch (e) {
     await fail(session, "The brief email didn't send", e);
   }
-};
+}

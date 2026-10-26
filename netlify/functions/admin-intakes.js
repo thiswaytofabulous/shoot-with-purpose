@@ -18,15 +18,19 @@ exports.handler = async (event) => {
     const s = await loadSession(event.queryStringParameters && event.queryStringParameters.id);
     if (!s) return jsonResponse(404, { error: "Not found" });
     if (!s.complete) return jsonResponse(409, { error: "This conversation isn't finished yet." });
+    const missing = ["ANTHROPIC_API_KEY", "BRIEF_TO_EMAIL", "RESEND_API_KEY"].filter((k) => !process.env[k]);
+    if (missing.length) return jsonResponse(500, { error: `Can't send: ${missing.join(", ")} not set in Netlify (Site configuration → Environment variables). Add it, redeploy, and try again.` });
     delete s.briefSentAt;
     delete s.briefError;
+    delete s.briefStartedAt;
+    s.briefRequestedAt = new Date().toISOString();
     await saveSession(s);
     const res = await fetch(`${siteUrl()}/.netlify/functions/brief-background`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token: s.token }),
     });
-    if (!res.ok) return jsonResponse(502, { error: `Couldn't start the brief (${res.status}).` });
+    if (!res.ok) return jsonResponse(502, { error: `The brief job wouldn't start (Netlify answered ${res.status}).` });
     return jsonResponse(202, { status: "sending" });
   }
 
@@ -51,6 +55,8 @@ exports.handler = async (event) => {
       brief: s.brief || null,
       briefSentAt: s.briefSentAt || null,
       briefError: s.briefError || null,
+      briefRequestedAt: s.briefRequestedAt || null,
+      briefStartedAt: s.briefStartedAt || null,
       messages: displayMessages(s),
     });
   }
