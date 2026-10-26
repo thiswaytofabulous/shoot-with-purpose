@@ -93,7 +93,8 @@
   .pending:empty{display:none}
   .pchip{display:flex;align-items:center;gap:6px;background:var(--bubble);font-size:12px;font-weight:700;padding:6px 8px 6px 12px;border-radius:99px}
   .pchip button{background:rgba(46,73,104,.15);border:0;width:18px;height:18px;border-radius:50%;cursor:pointer;color:var(--navy)}
-  .composer{padding:12px 16px 16px;display:flex;gap:10px;align-items:flex-end}
+  .composer{padding:12px 16px 6px;display:flex;gap:10px;align-items:flex-end}
+  .send-hint{font-size:11.5px;font-weight:600;color:var(--navy-soft);text-align:center;padding:0 16px 12px}
   .attach-btn{flex-shrink:0;width:46px;height:46px;border-radius:14px;border:1.5px solid var(--line);background:#fff;color:var(--navy-soft);cursor:pointer;display:flex;align-items:center;justify-content:center}
   .attach-btn:hover{border-color:var(--accent-strong);color:var(--accent-strong)}
   textarea{flex:1;min-width:0;resize:none;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;font:inherit;font-size:16px;font-weight:500;color:var(--navy);line-height:1.4;max-height:160px;outline:none}
@@ -148,9 +149,10 @@
       </button>
       <input type="file" id="fileInput" multiple accept="image/png,image/jpeg,image/gif,image/webp,application/pdf,text/plain,text/csv,text/markdown,.md" hidden />
       <label for="input" class="sr" hidden>Your message</label>
-      <textarea id="input" rows="1" placeholder="Type like you're talking to me…"></textarea>
+      <textarea id="input" rows="2" placeholder="Type like you're talking to me… then tap Send" aria-describedby="sendHint"></textarea>
       <button class="send" id="sendBtn" type="button">SEND</button>
     </div>
+    <div class="send-hint" id="sendHint">Enter starts a new line. Nothing sends until you tap <strong>Send</strong>.</div>
   </div>
 
   <!-- DONE -->
@@ -371,7 +373,8 @@
     if (!composerWrap.hidden) input.focus();
   }
   sendBtn.addEventListener("click", send);
-  input.addEventListener("keydown", function(e){ if (e.key === "Enter" && !e.shiftKey && !e.isComposing){ e.preventDefault(); send(); } });
+  // Enter is a new line (people kept sending half an answer). Only Send, or Ctrl/Cmd+Enter, sends.
+  input.addEventListener("keydown", function(e){ if (e.key === "Enter" && (e.metaKey || e.ctrlKey) && !e.isComposing){ e.preventDefault(); send(); } });
   input.addEventListener("input", function(){ input.style.height = "auto"; input.style.height = Math.min(input.scrollHeight, 160) + "px"; });
 
   $("notMeBtn").addEventListener("click", function(){
