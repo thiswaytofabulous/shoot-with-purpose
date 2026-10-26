@@ -18,6 +18,13 @@ const {
 // Background function (the -background suffix): Netlify answers 202 right
 // away and lets this run for up to 15 minutes. Generates Jessi's strategy
 // brief, saves it to the session, and emails it to her with the transcript.
+// Any failure is saved as session.briefError so the admin archive can show it.
+async function fail(session, msg, e) {
+  console.error(msg, e || "");
+  session.briefError = e && e.message ? `${msg}: ${e.message}` : msg;
+  await saveSession(session);
+}
+
 exports.handler = async (event) => {
   connectBlobs(event);
   let token;
@@ -47,14 +54,15 @@ exports.handler = async (event) => {
       session.brief = brief;
       await saveSession(session);
     } catch (e) {
-      console.error("brief generation failed", e);
+      await fail(session, "The AI brief didn't generate", e);
       brief = "(The AI brief didn't generate. The full conversation is below, and you can find it any time in the admin archive.)";
     }
   }
 
   const to = process.env.BRIEF_TO_EMAIL;
-  if (!to || !process.env.RESEND_API_KEY) {
-    console.error("BRIEF_TO_EMAIL / RESEND_API_KEY not set; brief saved to archive only");
+  const missing = ["BRIEF_TO_EMAIL", "RESEND_API_KEY"].filter((k) => !process.env[k]);
+  if (missing.length) {
+    await fail(session, `Email not sent: ${missing.join(" and ")} not set in Netlify. Brief saved here only`);
     return;
   }
 
@@ -75,8 +83,9 @@ exports.handler = async (event) => {
       text: `${brief}\n\n---\n\nFULL CONVERSATION\n\n${transcript}\n\nClient email: ${session.email}`,
     });
     session.briefSentAt = new Date().toISOString();
+    if (session.brief) delete session.briefError;
     await saveSession(session);
   } catch (e) {
-    console.error("brief email failed", e);
+    await fail(session, "The brief email didn't send", e);
   }
 };

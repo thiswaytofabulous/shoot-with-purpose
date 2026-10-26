@@ -40,6 +40,10 @@
   .b-row{margin:0 0 12px}
   .b-who{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
   .bubble{display:inline-block;max-width:84%;padding:12px 16px;border-radius:16px;font-size:14px;line-height:1.5;white-space:pre-wrap;text-align:left;overflow-wrap:anywhere}
+  .bstatus{font-size:13px;font-weight:600;line-height:1.5;padding:12px 14px;border-radius:12px;margin:0 0 14px;background:#E3EFE7;color:#2f6b47}
+  .bstatus.bad{background:#F8E3E3;color:#8a2a2a}
+  .resend{background:var(--navy);color:#fff;border:0;border-radius:99px;font:inherit;font-weight:800;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:9px 16px;cursor:pointer;margin:0 0 18px}
+  .resend:disabled{opacity:.5;cursor:default}
   [hidden]{display:none!important}
 </style>
 </head>
@@ -67,6 +71,8 @@
     <button class="back" id="backBtn" type="button">&larr; All conversations</button>
     <div class="dmeta" id="dmeta"></div>
     <span class="sec">Strategy brief</span>
+    <div class="bstatus" id="dbstatus" role="status" hidden></div>
+    <button class="resend" id="resendBtn" type="button" hidden>Send brief now</button>
     <div class="brief" id="dbrief"></div>
     <span class="sec">Full conversation</span>
     <div id="dconvo"></div>
@@ -75,7 +81,7 @@
 <script>
 (function(){
   var $ = function(id){ return document.getElementById(id); };
-  var token = "", all = [];
+  var token = "", all = [], current = null;
   var esc = function(s){ var d = document.createElement("div"); d.textContent = s == null ? "" : String(s); return d.innerHTML; };
   var fmt = function(iso){ try { return new Date(iso).toLocaleString(undefined, { dateStyle:"medium", timeStyle:"short" }); } catch(e){ return iso || ""; } };
   var PH = { change:"What's changing", goal:"The goal", gaps:"Gaps + destinations", people:"People + camera", wrap:"Wrapping up" };
@@ -114,6 +120,15 @@
     var res = await fetch("/.netlify/functions/admin-intakes?token=" + encodeURIComponent(token) + "&id=" + encodeURIComponent(id));
     if (!res.ok) return;
     var r = await res.json();
+    current = r.id;
+    var st = $("dbstatus");
+    st.hidden = !r.complete;
+    st.className = "bstatus" + (r.briefError ? " bad" : "");
+    st.textContent = r.briefError ? r.briefError
+      : r.briefSentAt ? "Brief emailed to you " + fmt(r.briefSentAt) + "."
+      : "The brief hasn't been emailed yet.";
+    $("resendBtn").hidden = !r.complete;
+    $("resendBtn").textContent = r.briefSentAt ? "Resend brief" : "Send brief now";
     $("dmeta").innerHTML = "<strong>" + esc(r.name) + (r.business ? " · " + esc(r.business) : "") + "</strong><br/>"
       + esc(r.email) + " · " + esc(r.brand) + (r.shoot ? " · " + esc(r.shoot) : "") + "<br/>"
       + (r.complete ? "Finished " + fmt(r.completedAt) : "In progress · last active " + fmt(r.updatedAt));
@@ -128,6 +143,16 @@
     $("listWrap").hidden = true; $("detail").hidden = false; window.scrollTo(0, 0);
   }
 
+  $("resendBtn").addEventListener("click", async function(){
+    var btn = this, st = $("dbstatus");
+    btn.disabled = true; st.hidden = false; st.className = "bstatus"; st.textContent = "Writing and sending the brief. This takes about a minute…";
+    try{
+      var res = await fetch("/.netlify/functions/admin-intakes?token=" + encodeURIComponent(token) + "&id=" + encodeURIComponent(current), { method:"POST" });
+      var data = await res.json().catch(function(){ return {}; });
+      if (!res.ok){ st.className = "bstatus bad"; st.textContent = data.error || "Something went wrong."; btn.disabled = false; return; }
+      setTimeout(function(){ btn.disabled = false; openDetail(current); }, 60000);
+    }catch(e){ st.className = "bstatus bad"; st.textContent = "Couldn't reach the server."; btn.disabled = false; }
+  });
   $("backBtn").addEventListener("click", function(){ $("detail").hidden = true; $("listWrap").hidden = false; });
   $("unlockBtn").addEventListener("click", function(){ token = $("tokenInput").value.trim(); if (!token){ $("gateErr").textContent = "Enter your access code."; return; } loadList(); });
   $("tokenInput").addEventListener("keydown", function(e){ if (e.key === "Enter") $("unlockBtn").click(); });
