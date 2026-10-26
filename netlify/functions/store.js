@@ -1,4 +1,4 @@
-const { connectBlobs, sessionsStore, displayMessages, jsonResponse } = require("./_shared");
+const { connectBlobs, sessionsStore, displayMessages, plainText, jsonResponse } = require("./_shared");
 
 // Feed for the TWTF Live Dashboard (submission-dashboard.netlify.app).
 // Same contract as the Wizards and Brand Bestie: POST {action:"list", adminCode}
@@ -39,7 +39,7 @@ exports.handler = async (event) => {
       updatedAt: s.updatedAt,
       completedAt: s.completedAt || null,
       brief: s.brief || null,
-      history: displayMessages(s).map((m) => ({ role: m.who === "client" ? "user" : "assistant", content: m.text })),
+      history: displayMessages(s).map((m) => ({ role: m.who === "client" ? "user" : "assistant", content: plainText(m.text) })),
     }));
 
   return jsonResponse(200, { sessions });

@@ -58,7 +58,7 @@ async function writeAndSend(session) {
         system: BRIEF_SYSTEM_PROMPT,
         messages: [{
           role: "user",
-          content: `Client: ${session.name}${session.business ? `, ${session.business}` : ""}\nBrand: ${brandOf(session.brand).name}\nShoot: ${session.shoot || "not specified"}\n\nPre-shoot conversation:\n\n${transcript}`,
+          content: `Client: ${session.name}${session.business ? `, ${session.business}` : ""}\nBrand: ${brandOf(session.brand).name}\nShoot: ${session.shoot || "not specified"}\nReturning client: ${session.returning ? "yes" : "no"}\n\nPre-shoot conversation:\n\n${transcript}`,
         }],
       });
       brief = response.content.filter((b) => b.type === "text").map((b) => b.text).join("\n").trim();

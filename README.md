@@ -22,6 +22,7 @@ Not for brand story videos. That's Legacy Lucy / Story to Legacy.
 |---|---|
 | HBM client | `https://YOUR-SITE.netlify.app/` |
 | TWTF client | `https://YOUR-SITE.netlify.app/?brand=twtf` |
+| Repeat client (short version, about 5 questions, skips the getting-to-know-you) | add `&returning=1` (automatic if they've finished one before) |
 | Named shoot (shows up in the chat and the PDF) | add `&shoot=HERO%20Session%20on%20Nov%209` |
 | Prefill their details | add `&name=Becky%20Reel&email=becky@...` (add `&business=...` to skip asking for it) |
 

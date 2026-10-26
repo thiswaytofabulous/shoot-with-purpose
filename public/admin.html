@@ -146,7 +146,7 @@
     $("dconvo").innerHTML = r.messages.map(function(m){
       var c = m.who === "client";
       return '<div class="b-row" style="text-align:' + (c ? "right" : "left") + '"><div class="b-who" style="color:' + (c ? "#5b6878" : "#9C5F66") + '">' + (c ? esc(r.name) : "Jessi") + '</div>'
-        + '<div class="bubble" style="background:' + (c ? "#2E4968" : "#F3F1F0") + ";color:" + (c ? "#fff" : "#2E4968") + '">' + esc(m.text) + "</div></div>";
+        + '<div class="bubble" style="background:' + (c ? "#2E4968" : "#F3F1F0") + ";color:" + (c ? "#fff" : "#2E4968") + '">' + esc(m.text).replace(/\*\*([\s\S]+?)\*\*/g, "<strong>$1</strong>") + "</div></div>";
     }).join("");
     $("listWrap").hidden = true; $("detail").hidden = false; window.scrollTo(0, 0);
   }

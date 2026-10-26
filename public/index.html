@@ -78,6 +78,7 @@
   .bubble{padding:13px 16px;border-radius:16px;font-size:15px;line-height:1.55;font-weight:500;white-space:pre-wrap;overflow-wrap:anywhere}
   .jessi .bubble{background:var(--bubble);color:var(--navy);border-bottom-left-radius:4px}
   .client .bubble{background:var(--navy);color:#fff;border-bottom-right-radius:4px}
+  .bubble .q{font-weight:800}
   .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
   .chip{font-size:11px;font-weight:700;padding:5px 10px;border-radius:99px;background:rgba(46,73,104,.08)}
   .typing .bubble{display:flex;gap:5px;align-items:center;padding:16px}
@@ -229,7 +230,16 @@
     var label = document.createElement("div"); label.className = "who";
     label.textContent = who === "jessi" ? "Jessi" : ((session && session.name) ? session.name.split(/\s+/)[0] : "You");
     stack.appendChild(label);
-    if (text){ var b = document.createElement("div"); b.className = "bubble"; b.textContent = text; stack.appendChild(b); }
+    if (text){
+      var b = document.createElement("div"); b.className = "bubble";
+      // Jessi's question comes wrapped in **...**: show it bold so skimmers can't miss it.
+      text.split(/\*\*([\s\S]+?)\*\*/).forEach(function(part, i){
+        if (!part) return;
+        if (i % 2){ var q = document.createElement("strong"); q.className = "q"; q.textContent = part; b.appendChild(q); }
+        else b.appendChild(document.createTextNode(part));
+      });
+      stack.appendChild(b);
+    }
     if (names && names.length){
       var c = document.createElement("div"); c.className = "chips";
       names.forEach(function(n){ var s = document.createElement("span"); s.className = "chip"; s.textContent = "Attached: " + n; c.appendChild(s); });
@@ -278,7 +288,7 @@
     btn.disabled = true; note.textContent = "";
     try{
       var data = await api("session", { method:"POST", headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({ action:"start", email:email, name:name, brand:brand, shoot: qs.get("shoot") || "", business: qs.get("business") || "" }) });
+        body: JSON.stringify({ action:"start", email:email, name:name, brand:brand, returning: /^(1|true|yes)$/i.test(qs.get("returning") || ""), shoot: qs.get("shoot") || "", business: qs.get("business") || "" }) });
       renderSession(data.session);
     }catch(e){ note.textContent = e.message; }
     btn.disabled = false;

@@ -79,6 +79,9 @@ exports.handler = async (event) => {
   // No conversation yet, or the last one is finished (a repeat client's next
   // shoot): start a fresh one. The finished one stays in the archive.
   const brand = brandOf(body.brand).key;
+  // Returning clients get the short version: from the link (&returning=1), or
+  // automatically when they've finished one of these before.
+  const returning = Boolean(body.returning) || Boolean(existing && existing.complete);
   const session = {
     token: newToken(),
     email,
@@ -86,6 +89,7 @@ exports.handler = async (event) => {
     business: clip(body.business, 160),
     brand,
     shoot: clip(body.shoot, 160),
+    returning,
     phase: "change",
     complete: false,
     createdAt: new Date().toISOString(),
